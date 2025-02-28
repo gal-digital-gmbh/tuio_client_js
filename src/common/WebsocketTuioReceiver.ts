@@ -1,5 +1,8 @@
 import OSC from "osc-js";
-import { TuioReceiver } from "./TuioReceiver.js";
+
+import { type OscMessage, TuioReceiver } from "./TuioReceiver.js";
+
+type OscMsg = OSC.Message & OscMessage;
 
 export class WebsocketTuioReceiver extends TuioReceiver {
     private readonly _host: string;
@@ -11,7 +14,7 @@ export class WebsocketTuioReceiver extends TuioReceiver {
         this._port = port;
         const plugin = new OSC.WebsocketClientPlugin({host: this._host, port: this._port});
         this._osc = new OSC({plugin: plugin});
-        this._osc.on("*", (message: OSC.Message) => this.onOscMessage(message));
+        this._osc.on("*", (message: OscMsg) => this.onOscMessage(message));
     }
 
     public connect() {
