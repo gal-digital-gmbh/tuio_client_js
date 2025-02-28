@@ -1,7 +1,12 @@
 import { default as default_2 } from 'osc-js';
 import { Vector } from 'vecti';
 
-declare type OscCallback = (oscMessage: default_2.Message) => void;
+declare type OscCallback = (oscMessage: any) => void;
+
+declare interface OscMessage {
+    address: string;
+    args: (string | number)[];
+}
 
 export declare class ScapeXMobile {
     private _ws;
@@ -162,8 +167,8 @@ export declare class Tuio20Client {
     _tuioReceiver: TuioReceiver;
     _tuioListeners: Tuio20Listener[];
     _tuioObjects: Map<number, Tuio20Object>;
-    _frmMessage: default_2.Message | null;
-    _otherMessages: default_2.Message[];
+    _frmMessage: OscMessage | null;
+    _otherMessages: OscMessage[];
     _bundleFrameId: number;
     _nextFrameId: number;
     _prevFrameId: number;
@@ -183,9 +188,9 @@ export declare class Tuio20Client {
     getTuioSymbolList(): (Tuio20Symbol | null)[];
     removeTuioListener(tuioListener: Tuio20Listener): void;
     removeAllTuioListeners(): void;
-    _onFrm(oscMessage: default_2.Message): void;
-    _onOther(oscMessage: default_2.Message): void;
-    _onAlv(oscMessage: default_2.Message): void;
+    _onFrm(oscMessage: OscMessage): void;
+    _onOther(oscMessage: OscMessage): void;
+    _onAlv(oscMessage: OscMessage): void;
 }
 
 declare class Tuio20Component extends Tuio20Point {
@@ -310,7 +315,7 @@ export declare class Tuio20Token extends Tuio20Component {
     _update(currentTime: TuioTime, tuId: number, cId: number, position: Vector, angle: number, velocity: Vector, aVel: number, mAcc: number, rAcc: number): void;
 }
 
-declare abstract class TuioReceiver {
+export declare abstract class TuioReceiver {
     private _isConnected;
     private _messageListeners;
     constructor();
@@ -318,7 +323,7 @@ declare abstract class TuioReceiver {
     abstract disconnect(): void;
     get isConnected(): boolean;
     protected set isConnected(isConnected: boolean);
-    onOscMessage(oscMessage: default_2.Message): void;
+    onOscMessage(oscMessage: any): void;
     addMessageListener(address: string, callback: OscCallback): void;
 }
 
@@ -335,7 +340,7 @@ declare class TuioState {
     toString(): string;
 }
 
-declare class TuioTime {
+export declare class TuioTime {
     private static _startTime;
     private _seconds;
     private _microSeconds;

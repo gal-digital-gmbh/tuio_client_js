@@ -1,16 +1,39 @@
 var he = Object.defineProperty;
 var le = (O, i, n) => i in O ? he(O, i, { enumerable: !0, configurable: !0, writable: !0, value: n }) : O[i] = n;
 var a = (O, i, n) => le(O, typeof i != "symbol" ? i + "" : i, n);
+class fe {
+  constructor() {
+    a(this, "_isConnected");
+    a(this, "_messageListeners");
+    this._isConnected = !1, this._messageListeners = /* @__PURE__ */ new Map();
+  }
+  get isConnected() {
+    return this._isConnected;
+  }
+  set isConnected(i) {
+    this._isConnected = i;
+  }
+  onOscMessage(i) {
+    const n = this._messageListeners.get(i.address);
+    if (n !== void 0)
+      for (let u of n)
+        u(i);
+  }
+  addMessageListener(i, n) {
+    var u;
+    this._messageListeners.has(i) || this._messageListeners.set(i, []), (u = this._messageListeners.get(i)) == null || u.push(n);
+  }
+}
 var rt = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
-function fe(O) {
+function de(O) {
   return O && O.__esModule && Object.prototype.hasOwnProperty.call(O, "default") ? O.default : O;
 }
-var ct = { exports: {} }, de = ct.exports, xt;
-function ge() {
+var ct = { exports: {} }, ge = ct.exports, xt;
+function pe() {
   return xt || (xt = 1, function(O, i) {
     (function(n, u) {
       O.exports = u();
-    })(de, function() {
+    })(ge, function() {
       function n(s, t, e) {
         return t = _(t), function(r, c) {
           if (c && (typeof c == "object" || typeof c == "function")) return c;
@@ -711,32 +734,9 @@ function ge() {
     });
   }(ct)), ct.exports;
 }
-var pe = ge();
-const jt = /* @__PURE__ */ fe(pe);
-class _e {
-  constructor() {
-    a(this, "_isConnected");
-    a(this, "_messageListeners");
-    this._isConnected = !1, this._messageListeners = /* @__PURE__ */ new Map();
-  }
-  get isConnected() {
-    return this._isConnected;
-  }
-  set isConnected(i) {
-    this._isConnected = i;
-  }
-  onOscMessage(i) {
-    const n = this._messageListeners.get(i.address);
-    if (n !== void 0)
-      for (let u of n)
-        u(i);
-  }
-  addMessageListener(i, n) {
-    var u;
-    this._messageListeners.has(i) || this._messageListeners.set(i, []), (u = this._messageListeners.get(i)) == null || u.push(n);
-  }
-}
-class Ce extends _e {
+var _e = pe();
+const jt = /* @__PURE__ */ de(_e);
+class Ce extends fe {
   constructor(n, u) {
     super();
     a(this, "_host");
@@ -753,6 +753,37 @@ class Ce extends _e {
     this._osc.close(), this.isConnected = !1;
   }
 }
+const $ = class $ {
+  constructor(i, n) {
+    a(this, "_seconds");
+    a(this, "_microSeconds");
+    this._seconds = i, this._microSeconds = n;
+  }
+  static fromOscTime(i) {
+    let n = Number(i >> 32n);
+    const u = Number(i & 0xFFFFFFFFn), d = Math.floor(u * 1e6 / Math.pow(2, 32));
+    return new $(n, d);
+  }
+  subtract(i) {
+    let n = this._seconds - i._seconds, u = this._microSeconds - i._microSeconds;
+    return u < 0 && (u += 1e6, n = n - 1), new $(n, u);
+  }
+  getTotalMilliseconds() {
+    return 1e3 * this._seconds + this._microSeconds / 1e3;
+  }
+  static init() {
+    $._startTime = $._getSystemTime();
+  }
+  static getCurrentTime() {
+    return $._getSystemTime().subtract($._startTime);
+  }
+  static _getSystemTime() {
+    let i = performance.now();
+    return new $(Math.floor(i / 1e3), Math.floor(i * 1e3) % 1e6);
+  }
+};
+a($, "_startTime", new $(0, 0));
+let Q = $;
 class bt {
   constructor(i, n) {
     a(this, "_startTime");
@@ -924,37 +955,6 @@ class be extends yt {
     this._angle = d, this.state !== T.Stopped && this.rotationAccel !== 0 && (this.state = T.Rotating), this._size = l, this._area = p;
   }
 }
-const $ = class $ {
-  constructor(i, n) {
-    a(this, "_seconds");
-    a(this, "_microSeconds");
-    this._seconds = i, this._microSeconds = n;
-  }
-  static fromOscTime(i) {
-    let n = Number(i >> 32n);
-    const u = Number(i & 0xFFFFFFFFn), d = Math.floor(u * 1e6 / Math.pow(2, 32));
-    return new $(n, d);
-  }
-  subtract(i) {
-    let n = this._seconds - i._seconds, u = this._microSeconds - i._microSeconds;
-    return u < 0 && (u += 1e6, n = n - 1), new $(n, u);
-  }
-  getTotalMilliseconds() {
-    return 1e3 * this._seconds + this._microSeconds / 1e3;
-  }
-  static init() {
-    $._startTime = $._getSystemTime();
-  }
-  static getCurrentTime() {
-    return $._getSystemTime().subtract($._startTime);
-  }
-  static _getSystemTime() {
-    let i = performance.now();
-    return new $(Math.floor(i / 1e3), Math.floor(i * 1e3) % 1e6);
-  }
-};
-a($, "_startTime", new $(0, 0));
-let Q = $;
 class E {
   /**
    * Create a vector with the given components.
@@ -1727,6 +1727,8 @@ export {
   ke as Tuio20Pointer,
   Ie as Tuio20Symbol,
   ye as Tuio20Token,
+  fe as TuioReceiver,
+  Q as TuioTime,
   Ce as WebsocketTuioReceiver
 };
 //# sourceMappingURL=tuio-client.es.js.map

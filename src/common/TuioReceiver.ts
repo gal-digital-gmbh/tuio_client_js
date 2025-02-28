@@ -1,8 +1,9 @@
 export interface OscMessage {
     address: string;
+    args: (string | number)[];
 }
 
-export type OscCallback = (oscMessage: OscMessage) => void;
+export type OscCallback = (oscMessage: any) => void;
 
 export abstract class TuioReceiver {
 
@@ -26,7 +27,7 @@ export abstract class TuioReceiver {
         this._isConnected = isConnected;
     }
 
-    public onOscMessage(oscMessage: OscMessage) {
+    public onOscMessage(oscMessage: any) {
         const messageListeners = this._messageListeners.get(oscMessage.address);
         if (messageListeners !== undefined) {
             for (let messageListener of messageListeners) {
