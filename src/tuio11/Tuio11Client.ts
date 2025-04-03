@@ -9,21 +9,21 @@ import { Tuio11Listener } from "./Tuio11Listener.js";
 
 export class Tuio11Client {
 
-    private _tuioReceiver: TuioReceiver;
-    private _currentTime: TuioTime;
-    private _currentFrame: number;
-    private _tuioObjects: Map<number, Tuio11Object>;
-    private _tuioCursors: Map<number, Tuio11Cursor>;
-    private _tuioBlobs: Map<number, Tuio11Blob>;
-    private _objectSetMessages: OSC.Message[];
-    private _cursorSetMessages: OSC.Message[];
-    private _blobSetMessages: OSC.Message[];
-    private _objectAliveMessage: OSC.Message | null;
-    private _cursorAliveMessage: OSC.Message | null;
-    private _blobAliveMessage: OSC.Message | null;
-    private _freeCursorIds: number[];
-    private _freeBlobIds: number[];
-    private _tuioListeners: Tuio11Listener[];
+    protected _tuioReceiver: TuioReceiver;
+    protected _currentTime: TuioTime;
+    protected _currentFrame: number;
+    protected _tuioObjects: Map<number, Tuio11Object>;
+    protected _tuioCursors: Map<number, Tuio11Cursor>;
+    protected _tuioBlobs: Map<number, Tuio11Blob>;
+    protected _objectSetMessages: OSC.Message[];
+    protected _cursorSetMessages: OSC.Message[];
+    protected _blobSetMessages: OSC.Message[];
+    protected _objectAliveMessage: OSC.Message | null;
+    protected _cursorAliveMessage: OSC.Message | null;
+    protected _blobAliveMessage: OSC.Message | null;
+    protected _freeCursorIds: number[];
+    protected _freeBlobIds: number[];
+    protected _tuioListeners: Tuio11Listener[];
 
     constructor(tuioReceiver: TuioReceiver) {
         this._tuioReceiver = tuioReceiver;
@@ -103,7 +103,7 @@ export class Tuio11Client {
         return ret === undefined ? null : ret;
     }
 
-    private updateFrame(fseq: number) {
+    protected updateFrame(fseq: number) {
         let currentTime = TuioTime.getCurrentTime();
 
         if (fseq > 0) {
