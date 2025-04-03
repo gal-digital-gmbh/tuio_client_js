@@ -54,21 +54,21 @@ export declare class Tuio11Blob extends Tuio11Container {
 }
 
 export declare class Tuio11Client {
-    private _tuioReceiver;
-    private _currentTime;
-    private _currentFrame;
-    private _tuioObjects;
-    private _tuioCursors;
-    private _tuioBlobs;
-    private _objectSetMessages;
-    private _cursorSetMessages;
-    private _blobSetMessages;
-    private _objectAliveMessage;
-    private _cursorAliveMessage;
-    private _blobAliveMessage;
-    private _freeCursorIds;
-    private _freeBlobIds;
-    private _tuioListeners;
+    protected _tuioReceiver: TuioReceiver;
+    protected _currentTime: TuioTime;
+    protected _currentFrame: number;
+    protected _tuioObjects: Map<number, Tuio11Object>;
+    protected _tuioCursors: Map<number, Tuio11Cursor>;
+    protected _tuioBlobs: Map<number, Tuio11Blob>;
+    protected _objectSetMessages: default_2.Message[];
+    protected _cursorSetMessages: default_2.Message[];
+    protected _blobSetMessages: default_2.Message[];
+    protected _objectAliveMessage: default_2.Message | null;
+    protected _cursorAliveMessage: default_2.Message | null;
+    protected _blobAliveMessage: default_2.Message | null;
+    protected _freeCursorIds: number[];
+    protected _freeBlobIds: number[];
+    protected _tuioListeners: Tuio11Listener[];
     constructor(tuioReceiver: TuioReceiver);
     connect(): void;
     disconnect(): void;
@@ -81,7 +81,7 @@ export declare class Tuio11Client {
     getTuioObject(sessionId: number): Tuio11Object | null;
     getTuioCursor(sessionId: number): Tuio11Cursor | null;
     getTuioBlob(sessionId: number): Tuio11Blob | null;
-    private updateFrame;
+    protected updateFrame(fseq: number): boolean;
     on2Dobj(oscMessage: default_2.Message): void;
     on2Dcur(oscMessage: default_2.Message): void;
     on2Dblb(oscMessage: default_2.Message): void;
